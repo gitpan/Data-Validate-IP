@@ -38,7 +38,7 @@ our @EXPORT = qw(
 );
 #                is_ipv6
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 #Global, we store this only once
 my %MASK;
@@ -511,7 +511,7 @@ sub _mask {
 
 =head1 SEE ALSO
 
-<b>[RFC 3330] [RFC 1918] [RFC 1700]</b>
+b<[RFC 3330] [RFC 1918] [RFC 1700]>
 
 =over 4
 

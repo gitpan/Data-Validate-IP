@@ -178,7 +178,7 @@ FUNCTIONS
             private/testnet/loopback ip.
 
 SEE ALSO
-    <b>[RFC 3330] [RFC 1918] [RFC 1700]</b>
+    b<[RFC 3330] [RFC 1918] [RFC 1700]>
 
     Data::Validate(3)
 
