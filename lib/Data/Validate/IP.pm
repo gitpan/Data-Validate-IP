@@ -1,6 +1,5 @@
 package Data::Validate::IP;
 
-#use 5.008002;
 use strict;
 use warnings;
 use Net::Netmask;
@@ -38,7 +37,7 @@ our @EXPORT = qw(
 );
 #                is_ipv6
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 #Global, we store this only once
 my %MASK;

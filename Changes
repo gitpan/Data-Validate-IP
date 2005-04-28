@@ -4,8 +4,11 @@ Revision history for Perl extension Data::Validate::IP.
 	- original version; created by h2xs 1.23 with options
 		-AXn Data::Validate::IP
 
-0.02  Thu Mar  4 09:43:14 2005
+0.02  Fri Mar  4 09:43:14 2005
 	-  added is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4
 
-0.03  Thu Mar  4 12:58:10 2005
+0.03  Fri Mar  4 12:58:10 2005
 	-  Minor fix to pod markup
+
+0.04  Thu Apr 28 09:07:29 2005
+	-  Removed perl version dependency in Makefile.PL
