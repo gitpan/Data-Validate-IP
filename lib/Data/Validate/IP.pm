@@ -12,6 +12,8 @@ use AutoLoader 'AUTOLOAD';
 use constant LOOPBACK   => [qw(127.0.0.0/8)];
 use constant TESTNET    => [qw(192.0.2.0/24)];
 use constant PRIVATE    => [qw(10.0.0.0/8 172.16.0.0/12 192.168.0.0/16)];
+use constant MULTICAST  => [qw(224.0.0.0/4)];
+use constant LINKLOCAL  => [qw(169.254.0.0/16)];
 
 our @ISA = qw(Exporter);
 
@@ -34,10 +36,12 @@ our @EXPORT = qw(
                 is_loopback_ipv4
                 is_testnet_ipv4
                 is_public_ipv4
+                is_multicast_ipv4
+                is_linklocal_ipv4
 );
 #                is_ipv6
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 #Global, we store this only once
 my %MASK;
@@ -419,6 +423,126 @@ sub is_testnet_ipv4 {
 	return $ip;
 }
 
+=pod
+
+=item B<is_multicast_ipv4> - is it a valid multicast ipv4 address
+
+  is_multicast_ipv4($value);
+  or
+  $obj->is_multicast_ipv4($value);
+
+=over 4
+
+=item I<Description>
+
+Returns the untainted ip addres if the test value appears to be a well-formed
+multicast ip address.
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists.
+
+=item I<From RFC 3330>
+
+   224.0.0.0/4 - This block, formerly known as the Class D address
+   space, is allocated for use in IPv4 multicast address assignments.
+   The IANA guidelines for assignments from this space are described in
+   [RFC3171].
+
+=back
+
+=cut
+
+
+sub is_multicast_ipv4 {
+       my $self = shift if ref($_[0]); 
+       my $value = shift;
+
+       return unless defined($value);
+
+       my $ip = is_ipv4($value);
+       return unless defined $ip;
+
+       return unless Net::Netmask::findNetblock($ip,_mask('multicast'));
+       return $ip;
+}
+
+
+=pod
+
+=item B<is_linklocal_ipv4> - is it a valid link-local ipv4 address
+
+  is_linklocal_ipv4($value);
+  or
+  $obj->is_linklocal_ipv4($value);
+
+=over 4
+
+=item I<Description>
+
+Returns the untainted ip addres if the test value appears to be a well-formed
+link-local ip address.
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists.
+
+=item I<From RFC 3330>
+
+   169.254.0.0/16 - This is the "link local" block.  It is allocated for
+   communication between hosts on a single link.  Hosts obtain these
+   addresses by auto-configuration, such as when a DHCP server may not
+   be found.
+
+=back
+
+=cut
+
+
+sub is_linklocal_ipv4 {
+       my $self = shift if ref($_[0]); 
+       my $value = shift;
+
+       return unless defined($value);
+
+       my $ip = is_ipv4($value);
+       return unless defined $ip;
+
+       return unless Net::Netmask::findNetblock($ip,_mask('linklocal'));
+       return $ip;
+}
+
+
 
 =pod
 
@@ -484,13 +608,17 @@ sub _mask {
 	return $MASK{$type} if (defined $MASK{$type});
 	my @masks;
 	if ($type eq 'public') {
-		@masks = (LOOPBACK, TESTNET, PRIVATE);
+		@masks = (LOOPBACK, TESTNET, PRIVATE,MULTICAST,LINKLOCAL);
 	} elsif ($type eq 'loopback') {
 		@masks = (LOOPBACK);
 	} elsif ($type eq 'private') {
 		@masks = (PRIVATE);
 	} elsif ($type eq 'testnet') {
 		@masks = (TESTNET);
+	} elsif ($type eq 'multicast') {
+		@masks = (MULTICAST);
+	} elsif ($type eq 'linklocal') {
+		@masks = (LINKLOCAL);
 	}
 	my $mask = {};
 	foreach my $default (@masks) {
@@ -530,9 +658,11 @@ Neil Neely <F<neil@frii.net>>.
 
 Thanks to Richard Sonnen <F<sonnen@richardsonnen.com>> for writing the Data::Validate module.
 
+Thanks to Matt Dainty <F<matt@bodgit-n-scarper.com>> for adding the is_multicast_ipv4 and is_linklocal_ipv4 code.
+
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005 Neil Neely.  
+Copyright (c) 2005-2007 Neil Neely.  
 
 
 

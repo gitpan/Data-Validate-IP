@@ -5,9 +5,8 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 17;
-BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4) ) };
-#BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_ipv6 is_private_ipv4) ) };
+use Test::More tests => 23;
+BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4) ) };
 
 #########################
 
@@ -32,6 +31,13 @@ is   ('127.0.0.1',	is_loopback_ipv4('127.0.0.1'),		'is_loopback_ipv4 127.0.0.1')
 is   ('192.0.2.9',	is_testnet_ipv4('192.0.2.9'),		'is_testnet_ipv4 192.0.2.9');
 is   ('216.17.184.1',	is_public_ipv4('216.17.184.1'),		'is_public_ipv4 216.17.184.1');
 isnt ('192.168.0.1',	is_public_ipv4('192.168.0.1'),		'is_public_ipv4 192.168.0.1');
+
+is   ('224.0.0.1',     is_multicast_ipv4('224.0.0.1'),         'is_multicast_ipv4 224.0.0.1');
+isnt ('216.17.184.1',  is_multicast_ipv4('216.17.184.1'),      'is_multicast_ipv4 216.17.184.1');
+isnt ('224.0.0.1',     is_public_ipv4('224.0.0.1'),            'is_public_ipv4 224.0.0.1');
+is   ('169.254.0.1',   is_linklocal_ipv4('169.254.0.1'),       'is_linklocal_ipv4 169.254.0.1');
+isnt ('216.17.184.1',  is_linklocal_ipv4('216.17.184.1'),      'is_linklocal_ipv4 216.17.184.1');
+isnt ('169.254.0.1',   is_public_ipv4('169.254.0.1'),          'is_public_ipv4 169.254.0.1');
 
 #Disabled ipv6 checks for now
 #is   ('::216.17.184.1',	is_ipv6('::216.17.184.1'),	'is_ipv6 ::216.17.184.1');

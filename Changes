@@ -12,3 +12,7 @@ Revision history for Perl extension Data::Validate::IP.
 
 0.04  Thu Apr 28 09:07:29 2005
 	-  Removed perl version dependency in Makefile.PL
+
+0.05  Tue Mar  6 12:42:11 2007
+	-  added is_multicast_ipv4 and is_linklocal_ipv4
+		Thanks to Matt Dainty <matt@bodgit-n-scarper.com> for doing all the work

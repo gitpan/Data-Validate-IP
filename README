@@ -155,6 +155,60 @@ FUNCTIONS
                documentation.  Addresses within this block should not appear on the
                public Internet.
 
+    is_multicast_ipv4 - is it a valid multicast ipv4 address
+          is_multicast_ipv4($value);
+          or
+          $obj->is_multicast_ipv4($value);
+
+        *Description*
+            Returns the untainted ip addres if the test value appears to be
+            a well-formed multicast ip address.
+
+        *Arguments*
+
+            $value
+                The potential ip to test.
+
+        *Returns*
+            Returns the untainted ip on success, undef on failure.
+
+        *Notes, Exceptions, & Bugs*
+            The function does not make any attempt to check whether an ip
+            actually exists.
+
+        *From RFC 3330*
+               224.0.0.0/4 - This block, formerly known as the Class D address
+               space, is allocated for use in IPv4 multicast address assignments.
+               The IANA guidelines for assignments from this space are described in
+               [RFC3171].
+
+    is_linklocal_ipv4 - is it a valid link-local ipv4 address
+          is_linklocal_ipv4($value);
+          or
+          $obj->is_linklocal_ipv4($value);
+
+        *Description*
+            Returns the untainted ip addres if the test value appears to be
+            a well-formed link-local ip address.
+
+        *Arguments*
+
+            $value
+                The potential ip to test.
+
+        *Returns*
+            Returns the untainted ip on success, undef on failure.
+
+        *Notes, Exceptions, & Bugs*
+            The function does not make any attempt to check whether an ip
+            actually exists.
+
+        *From RFC 3330*
+               169.254.0.0/16 - This is the "link local" block.  It is allocated for
+               communication between hosts on a single link.  Hosts obtain these
+               addresses by auto-configuration, such as when a DHCP server may not
+               be found.
+
     is_public_ipv4 - is it a valid public ipv4 address
           is_public_ipv4($value);
           or
@@ -192,8 +246,11 @@ ACKNOWLEDGEMENTS
     Thanks to Richard Sonnen <sonnen@richardsonnen.com> for writing the
     Data::Validate module.
 
+    Thanks to Matt Dainty <matt@bodgit-n-scarper.com> for adding the
+    is_multicast_ipv4 and is_linklocal_ipv4 code.
+
 COPYRIGHT AND LICENSE
-    Copyright (c) 2005 Neil Neely.
+    Copyright (c) 2005-2007 Neil Neely.
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself, either Perl version 5.8.2 or, at
