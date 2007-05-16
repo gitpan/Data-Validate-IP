@@ -10,5 +10,5 @@ WriteMakefile(
 			},
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Data/Validate/IP.pm', # retrieve abstract from module
-       AUTHOR         => 'Neil Neely <neil@frii.com>') : ()),
+       AUTHOR         => 'Neil Neely <neil@neely.cx>') : ()),
 );

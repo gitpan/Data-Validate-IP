@@ -15,7 +15,7 @@ BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_private_ipv4 is_loopback_ipv4
 
 is   ('216.17.184.1',	is_ipv4('216.17.184.1'),	'is_ipv4 216.17.184.1');
 is   ('0.0.0.0',	is_ipv4('0.0.0.0'),		'is_ipv4 0.0.0.0');
-isnt ('www.frii.com',	is_ipv4('www.frii.com'),	'is_ipv4 www.frii.com');
+isnt ('www.neely.cx',	is_ipv4('www.neely.cx'),	'is_ipv4 www.neely.cx');
 isnt ('216.17.184.G',	is_ipv4('216.17.184.G'),	'is_ipv4 216.17.184.G');
 isnt ('216.17.184.1.',	is_ipv4('216.17.184.1.'),	'is_ipv4 216.17.184.1.');
 isnt ('216.17.184',	is_ipv4('216.17.184'),		'is_ipv4 216.17.184');

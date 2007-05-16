@@ -41,7 +41,7 @@ our @EXPORT = qw(
 );
 #                is_ipv6
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 #Global, we store this only once
 my %MASK;
@@ -652,7 +652,7 @@ Add in support for verifying IPv6 addresses.
 
 =head1 AUTHOR
 
-Neil Neely <F<neil@frii.net>>.
+Neil Neely <F<neil@neely.cx>>.
 
 =head1 ACKNOWLEDGEMENTS 
 
