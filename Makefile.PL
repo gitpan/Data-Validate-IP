@@ -6,6 +6,7 @@ WriteMakefile(
     VERSION_FROM      => 'lib/Data/Validate/IP.pm', # finds $VERSION
     PREREQ_PM         => {
 				Net::Netmask	=> 0,
+				Test::More	=> 0,
 #				Net::IPv6Addr	=> 0,
 			},
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005

@@ -41,7 +41,7 @@ our @EXPORT = qw(
 );
 #                is_ipv6
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 #Global, we store this only once
 my %MASK;
@@ -88,11 +88,6 @@ The value to test is always the first (and often only) argument.
 
 =over 4
 
-=cut
-
-# -------------------------------------------------------------------------------
-
-=pod
 
 =item B<new> - constructor for OO usage
 
