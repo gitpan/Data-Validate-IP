@@ -1,5 +1,9 @@
 Revision history for Perl extension Data::Validate::IP.
 
+0.08  Wed Dec   6 2007
+        - Fixed is_ipv4 to treat leading 0's in an ip as invalid, i.e.: 017.1.1.1 is invalid
+		Thanks to Joshua D. Abraham <jabra@spl0it.org> for submitting the patch
+
 0.07  Wed May  17 2007
         - Added POD testing, and minor cleanup related to that
 

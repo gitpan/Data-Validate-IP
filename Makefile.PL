@@ -4,6 +4,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'Data::Validate::IP',
     VERSION_FROM      => 'lib/Data/Validate/IP.pm', # finds $VERSION
+    LICENSE	=>	'perl',
     PREREQ_PM         => {
 				Net::Netmask	=> 0,
 				Test::More	=> 0,

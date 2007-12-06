@@ -41,7 +41,7 @@ our @EXPORT = qw(
 );
 #                is_ipv6
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 #Global, we store this only once
 my %MASK;
@@ -173,7 +173,8 @@ sub is_ipv4 {
         my(@octets) = $value =~ /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
 	return unless (@octets == 4);
 	foreach (@octets) {
-		return unless ($_ >= 0 && $_ <= 255);
+		#return unless ($_ >= 0 && $_ <= 255);
+		return unless ($_ >= 0 && $_ <= 255 && $_ !~ /^0\d{1,2}$/);
 	}
         
         return join('.', @octets);
