@@ -64,6 +64,26 @@ FUNCTIONS
             actually exists. It only looks to see that the format is
             appropriate.
 
+    is_ipv6 - does the value look like an ip v6 address?
+          is_ipv6($value);
+                
+        *Description*
+            Returns the untainted ip address if the test value appears to be
+            a well-formed ip address.
+
+        *Arguments*
+
+            $value
+                The potential ip to test.
+
+        *Returns*
+            Returns the untainted ip on success, undef on failure.
+
+        *Notes, Exceptions, & Bugs*
+            The function does not make any attempt to check whether an ip
+            actually exists. It only looks to see that the format is
+            appropriate.
+
     is_private_ipv4 - is it a valid private ipv4 address
           is_private_ipv4($value);
           or
@@ -209,6 +229,37 @@ FUNCTIONS
                addresses by auto-configuration, such as when a DHCP server may not
                be found.
 
+    is_linklocal_ipv6 - is it a valid link-local ipv6 address
+          is_linklocal_ipv6($value);
+          or
+          $obj->is_linklocal_ipv6($value);
+
+        *Description*
+            Returns the untainted ip addres if the test value appears to be
+            a well-formed link-local ip address.
+
+        *Arguments*
+
+            $value
+                The potential ip to test.
+
+        *Returns*
+            Returns the untainted ip on success, undef on failure.
+
+        *Notes, Exceptions, & Bugs*
+            The function does not make any attempt to check whether an ip
+            actually exists.
+
+        *From RFC 2462*
+               A link-local address is formed by prepending the well-known link-
+               local prefix FE80::0 [ADDR-ARCH] (of appropriate length) to the
+               interface identifier. If the interface identifier has a length of N
+               bits, the interface identifier replaces the right-most N zero bits of
+               the link-local prefix.  If the interface identifier is more than 118
+               bits in length, autoconfiguration fails and manual configuration is
+               required. Note that interface identifiers will typically be 64-bits
+               long and based on EUI-64 identifiers as described in [ADDR-ARCH].
+
     is_public_ipv4 - is it a valid public ipv4 address
           is_public_ipv4($value);
           or
@@ -232,12 +283,18 @@ FUNCTIONS
             private/testnet/loopback ip.
 
 SEE ALSO
+    IPv4
+
     b<[RFC 3330] [RFC 1918] [RFC 1700]>
+
+    IPv6
+
+    b<[RFC 2460] [RFC 4291] [RFC 4294]>
 
     Data::Validate(3)
 
-TODO
-    Add in support for verifying IPv6 addresses.
+IPv6
+    IPv6 Support is new, please test it thoroughly and report any bugs.
 
 AUTHOR
     Neil Neely <neil@neely.cx>.
@@ -250,7 +307,7 @@ ACKNOWLEDGEMENTS
     is_multicast_ipv4 and is_linklocal_ipv4 code.
 
 COPYRIGHT AND LICENSE
-    Copyright (c) 2005-2007 Neil Neely.
+    Copyright (c) 2005-2009 Neil Neely.
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself, either Perl version 5.8.2 or, at

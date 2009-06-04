@@ -5,8 +5,8 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 25;
-BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4) ) };
+use Test::More tests => 43;
+BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_ipv6 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4 is_linklocal_ipv6) ) };
 
 #########################
 
@@ -41,6 +41,24 @@ is   ('169.254.0.1',   is_linklocal_ipv4('169.254.0.1'),       'is_linklocal_ipv
 isnt ('216.17.184.1',  is_linklocal_ipv4('216.17.184.1'),      'is_linklocal_ipv4 216.17.184.1');
 isnt ('169.254.0.1',   is_public_ipv4('169.254.0.1'),          'is_public_ipv4 169.254.0.1');
 
-#Disabled ipv6 checks for now
-#is   ('::216.17.184.1',	is_ipv6('::216.17.184.1'),	'is_ipv6 ::216.17.184.1');
-#isnt ('216.17.184.1',		is_ipv6('216.17.184.1'),	'is_ipv6 216.17.184.1');
+isnt   ('2067:fa88',					is_ipv6('2067:fa88'),			'is_ipv6 2067:fa88');
+isnt   ('2067:FA88',					is_ipv6('2067:FA88'),			'is_ipv6 2067:FA88');
+is   ('2067:fa88::0',					is_ipv6('2067:fa88::0'),			'is_ipv6 2067:fa88::0');
+is   ('2067:FA88::1',					is_ipv6('2067:FA88::1'),			'is_ipv6 2067:FA88::1');
+is   ('2607:fa88::8a2e:370:7334',			is_ipv6('2607:fa88::8a2e:370:7334'),	'is_ipv6 2607:fa88::8a2e:370:7334');
+is   ('2001:0db8:0000:0000:0000:0000:1428:57ab',	is_ipv6('2001:0db8:0000:0000:0000:0000:1428:57ab'),	'is_ipv6 2001:0db8:0000:0000:0000:0000:1428:57ab');
+is   ('2001:0db8:0000:0000:0000::1428:57ab',		is_ipv6('2001:0db8:0000:0000:0000::1428:57ab'),	'is_ipv6 2001:0db8:0000:0000:0000::1428:57ab');
+is   ('2001:0db8:0:0:0:0:1428:57ab',			is_ipv6('2001:0db8:0:0:0:0:1428:57ab'),	'is_ipv6 2001:0db8:0:0:0:0:1428:57ab');
+is   ('2001:0db8:0:0::1428:57ab',			is_ipv6('2001:0db8:0:0::1428:57ab'),	'is_ipv6 2001:0db8:0:0::1428:57ab');
+is   ('2001:0db8::1428:57ab',				is_ipv6('2001:0db8::1428:57ab'),	'is_ipv6 2001:0db8::1428:57ab');
+is   ('2001:db8::1428:57ab',				is_ipv6('2001:db8::1428:57ab'),	'is_ipv6 2001:db8::1428:57ab');
+is   ('::0',				is_ipv6('::0'),	'is_ipv6 ::0');
+is   ('::1',				is_ipv6('::1'),	'is_ipv6 ::1');
+is   ('::ffff:12.34.56.78',		is_ipv6('::ffff:12.34.56.78'),	'is_ipv6 ::ffff:12.34.56.78');
+
+isnt ('216.17.184.1',  is_ipv6('216.17.184.1'),      'is_ipv6 216.17.184.1');
+isnt ('bbb.bbb.bbb',  is_ipv6('bbb.bbb.bbb'),      'is_ipv6 bbb.bbb.bbb');
+
+isnt   ('fe80:db8',		is_linklocal_ipv6('fe80:db8'),	'is_linklocal_ipv6 fe80:db8');
+is   ('fe80:db8::4',		is_linklocal_ipv6('fe80:db8::4'),	'is_linklocal_ipv6 fe80:db8::4');
+

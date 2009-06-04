@@ -3,11 +3,10 @@ package Data::Validate::IP;
 use strict;
 use warnings;
 use Net::Netmask;
-#use Net::IPv6Addr;
 
 
 require Exporter;
-use AutoLoader 'AUTOLOAD';
+#use AutoLoader 'AUTOLOAD';
 
 use constant LOOPBACK   => [qw(127.0.0.0/8)];
 use constant TESTNET    => [qw(192.0.2.0/24)];
@@ -32,16 +31,17 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
                 is_ipv4
+                is_ipv6
                 is_private_ipv4
                 is_loopback_ipv4
                 is_testnet_ipv4
                 is_public_ipv4
                 is_multicast_ipv4
                 is_linklocal_ipv4
+                is_linklocal_ipv6
 );
-#                is_ipv6
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 
 #Global, we store this only once
 my %MASK;
@@ -49,8 +49,6 @@ my %MASK;
 
 # Preloaded methods go here.
 
-1;
-__END__
 # 
 
 =head1 NAME
@@ -180,56 +178,85 @@ sub is_ipv4 {
         return join('.', @octets);
 }
 
+
 # -------------------------------------------------------------------------------
 #
-#=pod
-#
-#=item B<is_ipv6> - does the value look like an ip v6 address?
-#                
-#  is_ipv6($value);
-#                
-#=over 4
-#
-#=item I<Description>  
-#
-#Returns the untainted ip address if the test value appears to be a well-formed
-#ip address.
-#
-#=item I<Arguments>
-#
-#=over 4
-#
-#=item $value
-#
-#The potential ip to test.
-#
-#=back
-#
-#=item I<Returns>
-#
-#Returns the untainted ip on success, undef on failure.
-#
-#=item I<Notes, Exceptions, & Bugs>
-#
-#The function does not make any attempt to check whether an ip
-#actually exists. It only looks to see that the format is appropriate.
-#All the real work for this is done by Net::IPv6Addr.
-#
-#=back
-#
-#=cut
-#
-#
-#
-#
-#sub is_ipv6 {
-#        my $self = shift if ref($_[0]); 
-#        my $value = shift;
-#        
-#        return unless defined($value);
-#	my $return = Net::IPv6Addr::is_ipv6($value);;
-#	return $return;
-#}
+
+=pod
+
+=item B<is_ipv6> - does the value look like an ip v6 address?
+                
+  is_ipv6($value);
+                
+=over 4
+
+=item I<Description>  
+
+Returns the untainted ip address if the test value appears to be a well-formed
+ip address.
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists. It only looks to see that the format is appropriate.
+
+=back
+
+=cut
+
+
+sub is_ipv6 {
+        my $self = shift if ref($_[0]); 
+        my $value = shift;
+
+        return unless defined($value);
+
+	# if there is a :: then there must be only one ::
+	# and the length can be variable
+	# without it, the length must be 8 groups
+
+	my (@chunks) = split(':', $value);
+	#need to see if last chunk is an ipv4 address, if it is we pop it off and 
+	#exempt it from the normal ipv6 checking and stick it back on at the end.
+	#if only one chunk and it matches it isn't ipv6 - it is a ipv4 address only
+	my $ipv4;
+	if (@chunks > 1 && is_ipv4($chunks[$#chunks])) {
+		$ipv4 = pop(@chunks);
+	}
+	my $empty = 0;
+	foreach (@chunks) {
+		return unless (/^[0123456789abcdef]{0,4}$/i);
+		$empty++ if /^$/;
+	}
+	#More than one :: block is bad, but if it starts with :: it will look like two, so we need an exception.
+	if ($empty == 2 && $value =~ /^::/) {
+		#This is ok
+	} elsif ($empty > 1) {
+		return;
+	}
+
+	if (defined $ipv4) {
+		push(@chunks, $ipv4);
+	}
+	#Need 8 chunks, or we need an empty section that could be filled to represent the missing '0' sections
+	return unless (@chunks == 8 || @chunks < 8 && $empty);
+        
+        return join(':', @chunks);
+}
 
 =pod
 
@@ -538,6 +565,71 @@ sub is_linklocal_ipv4 {
        return $ip;
 }
 
+=pod
+
+=item B<is_linklocal_ipv6> - is it a valid link-local ipv6 address
+
+  is_linklocal_ipv6($value);
+  or
+  $obj->is_linklocal_ipv6($value);
+
+=over 4
+
+=item I<Description>
+
+Returns the untainted ip addres if the test value appears to be a well-formed
+link-local ip address.
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists.
+
+=item I<From RFC 2462>
+
+   A link-local address is formed by prepending the well-known link-
+   local prefix FE80::0 [ADDR-ARCH] (of appropriate length) to the
+   interface identifier. If the interface identifier has a length of N
+   bits, the interface identifier replaces the right-most N zero bits of
+   the link-local prefix.  If the interface identifier is more than 118
+   bits in length, autoconfiguration fails and manual configuration is
+   required. Note that interface identifiers will typically be 64-bits
+   long and based on EUI-64 identifiers as described in [ADDR-ARCH].
+
+=back
+
+=cut
+
+
+sub is_linklocal_ipv6 {
+       my $self = shift if ref($_[0]); 
+       my $value = shift;
+
+       return unless defined($value);
+
+       my $ip = is_ipv6($value);
+       return unless defined $ip;
+
+       return unless $ip =~ /^fe80:/i;
+       return $ip;
+}
+
+
+
 
 
 =pod
@@ -628,13 +720,23 @@ sub _mask {
 }
 
 
+1;
+__END__
+
+
 # -------------------------------------------------------------------------------
 
 =back
 
 =head1 SEE ALSO
 
+IPv4
+
 b<[RFC 3330] [RFC 1918] [RFC 1700]>
+
+IPv6
+
+b<[RFC 2460] [RFC 4291] [RFC 4294]>
 
 =over 4
 
@@ -642,9 +744,9 @@ b<[RFC 3330] [RFC 1918] [RFC 1700]>
 
 =back
 
-=head1 TODO
+=head1 IPv6
 
-Add in support for verifying IPv6 addresses.
+IPv6 Support is new, please test it thoroughly and report any bugs.
 
 =head1 AUTHOR
 
@@ -658,7 +760,7 @@ Thanks to Matt Dainty <F<matt@bodgit-n-scarper.com>> for adding the is_multicast
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005-2007 Neil Neely.  
+Copyright (c) 2005-2009 Neil Neely.  
 
 
 
