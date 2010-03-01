@@ -1,5 +1,10 @@
 Revision history for Perl extension Data::Validate::IP.
 
+0.11  Mon Mar  01 2010
+	- Added support for is_innet_ipv4 - simple check to see if IP is in network
+		Thanks to "Bartłomiej Syryjczyk" <bartlomiej@syryjczyk.name> for suggesting the function
+	  
+
 0.10  Thu Jun  04 2009
 	- Added initial support for is_ipv6.  ipv6 is new territory for me, so please send in your 
 	  bug reports to me so that I can make sure I get it done correctly.

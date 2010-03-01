@@ -6,7 +6,6 @@ use Net::Netmask;
 
 
 require Exporter;
-#use AutoLoader 'AUTOLOAD';
 
 use constant LOOPBACK   => [qw(127.0.0.0/8)];
 use constant TESTNET    => [qw(192.0.2.0/24)];
@@ -32,6 +31,7 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw(
                 is_ipv4
                 is_ipv6
+		is_innet_ipv4
                 is_private_ipv4
                 is_loopback_ipv4
                 is_testnet_ipv4
@@ -41,7 +41,7 @@ our @EXPORT = qw(
                 is_linklocal_ipv6
 );
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 #Global, we store this only once
 my %MASK;
@@ -53,23 +53,31 @@ my %MASK;
 
 =head1 NAME
 
-Data::Validate::IP - ip validation methods
+Data::Validate::IP - ipv4 and ipv6 validation methods
 
 =head1 SYNOPSIS
 
-  use Data::Validate::IP qw(is_ipv4);
+  use Data::Validate::IP qw(is_ipv4 is_ipv6);
   
   if(is_ipv4($suspect)){
-        print "Looks like an ip address";
+        print "Looks like an ipv4 address";
   } else {
-        print "Not an ip address\n";
+        print "Not an ipv4 address\n";
+  }
+
+  if(is_ipv6($suspect)){
+        print "Looks like an ipv6 address";
+  } else {
+        print "Not an ipv6 address\n";
   }
   
 
   # or as an object
   my $v = Data::Validate::IP->new();
   
-  die "not an ip" unless ($v->is_ipv4('domain.com'));
+  die "not an ipv4 ip" unless ($v->is_ipv4('domain.com'));
+
+  die "not an ipv6 ip" unless ($v->is_ipv6('domain.com'));
 
 =head1 DESCRIPTION
 
@@ -256,6 +264,85 @@ sub is_ipv6 {
 	return unless (@chunks == 8 || @chunks < 8 && $empty);
         
         return join(':', @chunks);
+}
+
+=pod
+
+=item B<is_innet_ipv4> - is it a valid ipv4 address in the network specified
+
+  is_innet_ipv4($value,$network);
+  or
+  $obj->is_innet_ipv4($value,$network);
+
+=over 4
+
+=item I<Description>
+
+Returns the untainted ip address if the test value appears to be a well-formed
+ip address inside of the network specified
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=item $network
+
+The potential network the IP must be a part of. Functionality uses Net::Netmask and should be in the form:
+
+       '216.240.32.0/24'               The preferred form.
+
+       '216.240.32.0:255.255.255.0'
+       '216.240.32.0-255.255.255.0'
+       '216.240.32.0 - 216.240.32.255'
+       '216.240.32.4'                  A /32 block.
+
+       '216.240.32'                    Always a /24 block.
+
+       '216.240'                       Always a /16 block.
+
+       '140'                           Always a /8 block.
+
+       '216.240.32/24'
+       '216.240/16'
+       'default'                       0.0.0.0/0 (the default route)
+
+       '216.240.32.0#0.0.31.255'       A hostmask (as used by Cisco
+                                       access-lists).
+
+Examples taken from Net::Netmask documentation.  For more advanced network matching needs please see Net::Netmask.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists. 
+
+=back
+
+=cut
+
+
+sub is_innet_ipv4 {
+        my $self = shift if ref($_[0]); 
+        my $value = shift;
+        my $network = shift;
+        
+        return unless defined($value);
+
+	my $ip = is_ipv4($value);
+	return unless defined $ip;
+
+	return unless Net::Netmask::findNetblock($ip,_mask($network));
+	return $ip;
 }
 
 =pod
@@ -707,7 +794,10 @@ sub _mask {
 		@masks = (MULTICAST);
 	} elsif ($type eq 'linklocal') {
 		@masks = (LINKLOCAL);
+	} else {
+		@masks = ([$type]);
 	}
+
 	my $mask = {};
 	foreach my $default (@masks) {
 		foreach my $range (@{$default}) {
@@ -742,6 +832,8 @@ b<[RFC 2460] [RFC 4291] [RFC 4294]>
 
 =item  L<Data::Validate(3)>
 
+=item  L<Net::Netmask(3)>
+
 =back
 
 =head1 IPv6
@@ -760,7 +852,7 @@ Thanks to Matt Dainty <F<matt@bodgit-n-scarper.com>> for adding the is_multicast
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005-2009 Neil Neely.  
+Copyright (c) 2005-2010 Neil Neely.  
 
 
 

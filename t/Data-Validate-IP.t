@@ -5,8 +5,8 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 43;
-BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_ipv6 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4 is_linklocal_ipv6) ) };
+use Test::More tests => 45;
+BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_innet_ipv4 is_ipv6 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4 is_linklocal_ipv6) ) };
 
 #########################
 
@@ -23,6 +23,9 @@ isnt ('216.17.184.',	is_ipv4('216.17.184.'),		'is_ipv4 216.17.184.');
 isnt ('256.17.184.1',	is_ipv4('256.17.184.1'),	'is_ipv4 256.17.184.1');
 isnt ('216.017.184.1',	is_ipv4('216.017.184.1'),	'is_ipv4 216.017.184.1');
 isnt ('016.17.184.1',	is_ipv4('016.17.184.1'),	'is_ipv4 016.17.184.1');
+
+is   ('216.17.184.1',	is_innet_ipv4('216.17.184.1','216.17.184.0/24'),	'is_innet_ipv4 216.17.184.1 216.17.184.0/24');
+isnt   ('216.17.184.1',	is_innet_ipv4('127.0.0.1','216.17.184.0/24'),	'is_innet_ipv4 127.0.0.1 216.17.184.0/24');
 
 
 is   ('10.0.0.1',	is_private_ipv4('10.0.0.1'),		'is_private_ipv4 10.0.0.1');
