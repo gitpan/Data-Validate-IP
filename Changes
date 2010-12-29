@@ -1,5 +1,10 @@
 Revision history for Perl extension Data::Validate::IP.
 
+0.12  Wed Dec  29 2010
+	- Fixed parsing of trailing :: (such as 2001::), as that is valid
+		This address bug#58991 - Thanks to Alan.Chester@tekelec.com for identifying the problem
+	- Also fixed incorrectly treating 2001::1: as a valid IPv6 address when it isn't
+	
 0.11  Mon Mar  01 2010
 	- Added support for is_innet_ipv4 - simple check to see if IP is in network
 		Thanks to "Bartłomiej Syryjczyk" <bartlomiej@syryjczyk.name> for suggesting the function

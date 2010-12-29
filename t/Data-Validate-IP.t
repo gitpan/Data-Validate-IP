@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 45;
+use Test::More tests => 49;
 BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_innet_ipv4 is_ipv6 is_private_ipv4 is_loopback_ipv4 is_testnet_ipv4 is_public_ipv4 is_multicast_ipv4 is_linklocal_ipv4 is_linklocal_ipv6) ) };
 
 #########################
@@ -58,6 +58,10 @@ is   ('2001:db8::1428:57ab',				is_ipv6('2001:db8::1428:57ab'),	'is_ipv6 2001:db
 is   ('::0',				is_ipv6('::0'),	'is_ipv6 ::0');
 is   ('::1',				is_ipv6('::1'),	'is_ipv6 ::1');
 is   ('::ffff:12.34.56.78',		is_ipv6('::ffff:12.34.56.78'),	'is_ipv6 ::ffff:12.34.56.78');
+is   ('2067::',				is_ipv6('2067::'),	'is_ipv6 2607::');
+isnt ('2067:::',			is_ipv6('2067:::'),	'is_ipv6 2607:::');
+isnt ('2067:::1',			is_ipv6('2067:::1'),	'is_ipv6 2607:::1');
+isnt ('2067::1:',			is_ipv6('2067::1:'),	'is_ipv6 2607::1:');
 
 isnt ('216.17.184.1',  is_ipv6('216.17.184.1'),      'is_ipv6 216.17.184.1');
 isnt ('bbb.bbb.bbb',  is_ipv6('bbb.bbb.bbb'),      'is_ipv6 bbb.bbb.bbb');
