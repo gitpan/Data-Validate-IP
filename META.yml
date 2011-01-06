@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Data-Validate-IP
-version:            0.12
+version:            0.13
 abstract:           ipv4 and ipv6 validation methods
 author:
     - Neil Neely <neil@neely.cx>

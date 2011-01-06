@@ -41,7 +41,7 @@ our @EXPORT = qw(
                 is_linklocal_ipv6
 );
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 #Global, we store this only once
 my %MASK;
@@ -242,13 +242,15 @@ sub is_ipv6 {
 	#exempt it from the normal ipv6 checking and stick it back on at the end.
 	#if only one chunk and it matches it isn't ipv6 - it is a ipv4 address only
 	my $ipv4;
+	my $expected_chunks = 8;
 	if (@chunks > 1 && is_ipv4($chunks[$#chunks])) {
 		$ipv4 = pop(@chunks);
+		$expected_chunks--;
 	}
 	my $empty = 0;
 	#Workaround to handle trailing :: being valid
 
-	if ($value =~ /[0123456789abcdef]{0,4}::$/) {
+	if ($value =~ /[0123456789abcdef]{1,4}::$/) {
 		$empty++;
 	} elsif ($value =~ /:$/) {
 		#single trailing ':' is invalid
@@ -269,7 +271,7 @@ sub is_ipv6 {
 		push(@chunks, $ipv4);
 	}
 	#Need 8 chunks, or we need an empty section that could be filled to represent the missing '0' sections
-	return unless (@chunks == 8 || @chunks < 8 && $empty);
+	return unless (@chunks == $expected_chunks || @chunks < $expected_chunks && $empty);
 
        	my $return = join(':', @chunks);
 	#Need to handle the exception of trailing :: being valid
