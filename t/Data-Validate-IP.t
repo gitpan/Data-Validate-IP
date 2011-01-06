@@ -13,36 +13,40 @@ BEGIN { use_ok('Data::Validate::IP', qw(is_ipv4 is_innet_ipv4 is_ipv6 is_private
 # Insert your test code below, the Test::More module is use()ed here so read
 # its man page ( perldoc Test::More ) for help writing this test script.
 
-is   ('216.17.184.1',	is_ipv4('216.17.184.1'),	'is_ipv4 216.17.184.1');
-is   ('0.0.0.0',	is_ipv4('0.0.0.0'),		'is_ipv4 0.0.0.0');
-isnt ('www.neely.cx',	is_ipv4('www.neely.cx'),	'is_ipv4 www.neely.cx');
-isnt ('216.17.184.G',	is_ipv4('216.17.184.G'),	'is_ipv4 216.17.184.G');
-isnt ('216.17.184.1.',	is_ipv4('216.17.184.1.'),	'is_ipv4 216.17.184.1.');
-isnt ('216.17.184',	is_ipv4('216.17.184'),		'is_ipv4 216.17.184');
-isnt ('216.17.184.',	is_ipv4('216.17.184.'),		'is_ipv4 216.17.184.');
-isnt ('256.17.184.1',	is_ipv4('256.17.184.1'),	'is_ipv4 256.17.184.1');
-isnt ('216.017.184.1',	is_ipv4('216.017.184.1'),	'is_ipv4 216.017.184.1');
-isnt ('016.17.184.1',	is_ipv4('016.17.184.1'),	'is_ipv4 016.17.184.1');
+is   (is_ipv4('216.17.184.1'),	'216.17.184.1',		'is_ipv4 216.17.184.1');
+is   (is_ipv4('0.0.0.0'),	'0.0.0.0',		'is_ipv4 0.0.0.0');
+is   (is_ipv4('www.neely.cx'),	undef,			'is_ipv4 www.neely.cx');
+is   (is_ipv4('216.17.184.G'),	undef,			'is_ipv4 216.17.184.G');
+is   (is_ipv4('216.17.184.1.'),	undef,			'is_ipv4 216.17.184.1.');
+is   (is_ipv4('216.17.184'),	undef,			'is_ipv4 216.17.184');
+is   (is_ipv4('216.17.184.'),	undef,			'is_ipv4 216.17.184.');
+is   (is_ipv4('256.17.184.1'),	undef,			'is_ipv4 256.17.184.1');
+is   (is_ipv4('216.017.184.1'),	undef,			'is_ipv4 216.017.184.1');
+is   (is_ipv4('016.17.184.1'),	undef,			'is_ipv4 016.17.184.1');
 
-is   ('216.17.184.1',	is_innet_ipv4('216.17.184.1','216.17.184.0/24'),	'is_innet_ipv4 216.17.184.1 216.17.184.0/24');
-isnt   ('216.17.184.1',	is_innet_ipv4('127.0.0.1','216.17.184.0/24'),	'is_innet_ipv4 127.0.0.1 216.17.184.0/24');
+is   (is_innet_ipv4('216.17.184.1','216.17.184.0/24'),	'216.17.184.1',		'is_innet_ipv4 216.17.184.1 216.17.184.0/24');
+is   (is_innet_ipv4('127.0.0.1','216.17.184.0/24'),	undef,					'is_innet_ipv4 127.0.0.1 216.17.184.0/24');
 
 
-is   ('10.0.0.1',	is_private_ipv4('10.0.0.1'),		'is_private_ipv4 10.0.0.1');
-is   ('172.16.0.1',	is_private_ipv4('172.16.0.1'),		'is_private_ipv4 172.16.0.1');
-is   ('192.168.0.1',	is_private_ipv4('192.168.0.1'),		'is_private_ipv4 192.168.0.1');
-isnt ('216.17.184.1',	is_private_ipv4('216.17.184.1'),	'is_private_ipv4 216.17.184.1');
-is   ('127.0.0.1',	is_loopback_ipv4('127.0.0.1'),		'is_loopback_ipv4 127.0.0.1');
-is   ('192.0.2.9',	is_testnet_ipv4('192.0.2.9'),		'is_testnet_ipv4 192.0.2.9');
-is   ('216.17.184.1',	is_public_ipv4('216.17.184.1'),		'is_public_ipv4 216.17.184.1');
-isnt ('192.168.0.1',	is_public_ipv4('192.168.0.1'),		'is_public_ipv4 192.168.0.1');
+is   (is_private_ipv4('10.0.0.1'),	'10.0.0.1',		'is_private_ipv4 10.0.0.1');
+is   (is_private_ipv4('172.16.0.1'),	'172.16.0.1',		'is_private_ipv4 172.16.0.1');
+is   (is_private_ipv4('192.168.0.1'),	'192.168.0.1',		'is_private_ipv4 192.168.0.1');
+is   (is_private_ipv4('216.17.184.1'),	undef,			'is_private_ipv4 216.17.184.1');
 
-is   ('224.0.0.1',     is_multicast_ipv4('224.0.0.1'),         'is_multicast_ipv4 224.0.0.1');
-isnt ('216.17.184.1',  is_multicast_ipv4('216.17.184.1'),      'is_multicast_ipv4 216.17.184.1');
-isnt ('224.0.0.1',     is_public_ipv4('224.0.0.1'),            'is_public_ipv4 224.0.0.1');
-is   ('169.254.0.1',   is_linklocal_ipv4('169.254.0.1'),       'is_linklocal_ipv4 169.254.0.1');
-isnt ('216.17.184.1',  is_linklocal_ipv4('216.17.184.1'),      'is_linklocal_ipv4 216.17.184.1');
-isnt ('169.254.0.1',   is_public_ipv4('169.254.0.1'),          'is_public_ipv4 169.254.0.1');
+is   (is_loopback_ipv4('127.0.0.1'),	'127.0.0.1',		'is_loopback_ipv4 127.0.0.1');
+is   (is_testnet_ipv4('192.0.2.9'),	'192.0.2.9',		'is_testnet_ipv4 192.0.2.9');
+
+is   (is_public_ipv4('216.17.184.1'),	'216.17.184.1',		'is_public_ipv4 216.17.184.1');
+is   (is_public_ipv4('192.168.0.1'),	undef,			'is_public_ipv4 192.168.0.1');
+
+is   (is_multicast_ipv4('224.0.0.1'),    '224.0.0.1',         	'is_multicast_ipv4 224.0.0.1');
+is   (is_multicast_ipv4('216.17.184.1'),  undef,   	   	'is_multicast_ipv4 216.17.184.1');
+
+is   (is_public_ipv4('169.254.0.1'),   	undef,			'is_public_ipv4 169.254.0.1');
+is   (is_public_ipv4('224.0.0.1'),     	undef,			'is_public_ipv4 224.0.0.1');
+
+is   (is_linklocal_ipv4('169.254.0.1'),	'169.254.0.1',		'is_linklocal_ipv4 169.254.0.1');
+is   (is_linklocal_ipv4('216.17.184.1'),undef,      		'is_linklocal_ipv4 216.17.184.1');
 
 
 is   (is_ipv6('2067:fa88'),					undef,				'is_ipv6 2067:fa88');

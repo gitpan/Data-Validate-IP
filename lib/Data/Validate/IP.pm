@@ -41,7 +41,7 @@ our @EXPORT = qw(
                 is_linklocal_ipv6
 );
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 #Global, we store this only once
 my %MASK;

@@ -1,5 +1,12 @@
 Revision history for Perl extension Data::Validate::IP.
 
+0.14  Thu Jan  06 2011
+	- Cleaned up test suite (no code changes)
+
+0.13  Thu Jan  06 2011
+	- Fixed unshorted ipv6 check when ipv4 address is trailing. (Bug#64532)
+		Thanks to Milan Matlak <milan.matlak@sde.cz> for patch
+
 0.12  Wed Dec  29 2010
 	- Fixed parsing of trailing :: (such as 2001::), as that is valid
 		This address bug#58991 - Thanks to Alan.Chester@tekelec.com for identifying the problem
