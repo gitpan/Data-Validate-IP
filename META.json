@@ -1,0 +1,60 @@
+{
+   "abstract" : "ipv4 and ipv6 validation methods",
+   "author" : [
+      "Neil Neely <neil@neely.cx>",
+      "Dave Rolsky <autarch@urth.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300030, CPAN::Meta::Converter version 2.120921",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Data-Validate-IP",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "develop" : {
+         "requires" : {
+            "Test::Pod" : "1.41"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Exporter" : "0",
+            "NetAddr::IP" : "4",
+            "Scalar::Util" : "0",
+            "Socket" : "0",
+            "strict" : "0",
+            "warnings" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.88",
+            "Test::Requires" : "0"
+         }
+      }
+   },
+   "release_status" : "testing",
+   "resources" : {
+      "bugtracker" : {
+         "mailto" : "bug-data-validate-ip@rt.cpan.org",
+         "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=Data-Validate-IP"
+      },
+      "repository" : {
+         "type" : "git",
+         "url" : "git://git.urth.org/Data-Validate-IP.git",
+         "web" : "http://git.urth.org/Data-Validate-IP.git"
+      }
+   },
+   "version" : "0.15",
+   "x_authority" : "cpan:NEELY"
+}
+

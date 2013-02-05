@@ -1,21 +1,29 @@
---- #YAML:1.0
-name:               Data-Validate-IP
-version:            0.14
-abstract:           ipv4 and ipv6 validation methods
+---
+abstract: 'ipv4 and ipv6 validation methods'
 author:
-    - Neil Neely <neil@neely.cx>
-license:            perl
-distribution_type:  module
+  - 'Neil Neely <neil@neely.cx>'
+  - 'Dave Rolsky <autarch@urth.org>'
+build_requires:
+  Test::More: 0.88
+  Test::Requires: 0
 configure_requires:
-    ExtUtils::MakeMaker:  0
-requires:
-    Net::Netmask:  0
-    Test::More:    0
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.46
+  ExtUtils::MakeMaker: 6.30
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300030, CPAN::Meta::Converter version 2.120921'
+license: perl
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Data-Validate-IP
+requires:
+  Exporter: 0
+  NetAddr::IP: 4
+  Scalar::Util: 0
+  Socket: 0
+  strict: 0
+  warnings: 0
+resources:
+  bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Data-Validate-IP
+  repository: git://git.urth.org/Data-Validate-IP.git
+version: 0.15
+x_authority: cpan:NEELY
