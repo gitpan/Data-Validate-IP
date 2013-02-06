@@ -18,7 +18,12 @@ BEGIN {
         && eval {
         require Socket;
         Socket->import(qw( AF_INET AF_INET6 inet_pton ));
-        1;
+        # On some platforms, Socket.pm exports an inet_pton that just dies
+        # when it is called. On others, inet_pton accepts various forms of
+        # invalid input.
+        defined &Socket::inet_pton
+            && !defined inet_pton(Socket::AF_INET(),  '016.17.184.1')
+            && !defined inet_pton(Socket::AF_INET6(), '2067::1:');
         };
 
     if ($HAS_SOCKET) {
@@ -344,24 +349,25 @@ Data::Validate::IP - ipv4 and ipv6 validation methods
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
   use Data::Validate::IP qw(is_ipv4 is_ipv6);
 
-  if(is_ipv4($suspect)){
-        print "Looks like an ipv4 address";
-  } else {
-        print "Not an ipv4 address\n";
+  if (is_ipv4($suspect)) {
+      print "Looks like an ipv4 address";
+  }
+  else {
+      print "Not an ipv4 address\n";
   }
 
-  if(is_ipv6($suspect)){
-        print "Looks like an ipv6 address";
-  } else {
-        print "Not an ipv6 address\n";
+  if (is_ipv6($suspect)) {
+      print "Looks like an ipv6 address";
   }
-
+  else {
+      print "Not an ipv6 address\n";
+  }
 
   # or as an object
   my $v = Data::Validate::IP->new();

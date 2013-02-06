@@ -30,7 +30,6 @@
             "Exporter" : "0",
             "NetAddr::IP" : "4",
             "Scalar::Util" : "0",
-            "Socket" : "0",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -54,7 +53,7 @@
          "web" : "http://git.urth.org/Data-Validate-IP.git"
       }
    },
-   "version" : "0.15",
+   "version" : "0.16",
    "x_authority" : "cpan:NEELY"
 }
 

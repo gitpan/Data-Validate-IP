@@ -26,11 +26,10 @@ my %WriteMakefileArgs = (
     "Exporter" => 0,
     "NetAddr::IP" => 4,
     "Scalar::Util" => 0,
-    "Socket" => 0,
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.15",
+  "VERSION" => "0.16",
   "test" => {
     "TESTS" => "t/*.t"
   }
