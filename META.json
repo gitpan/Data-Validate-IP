@@ -30,6 +30,7 @@
             "Exporter" : "0",
             "NetAddr::IP" : "4",
             "Scalar::Util" : "0",
+            "perl" : "5.008",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -41,7 +42,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "mailto" : "bug-data-validate-ip@rt.cpan.org",
@@ -53,7 +54,7 @@
          "web" : "http://git.urth.org/Data-Validate-IP.git"
       }
    },
-   "version" : "0.16",
+   "version" : "0.17",
    "x_authority" : "cpan:NEELY"
 }
 

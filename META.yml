@@ -19,10 +19,11 @@ requires:
   Exporter: 0
   NetAddr::IP: 4
   Scalar::Util: 0
+  perl: 5.008
   strict: 0
   warnings: 0
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Data-Validate-IP
   repository: git://git.urth.org/Data-Validate-IP.git
-version: 0.16
+version: 0.17
 x_authority: cpan:NEELY
