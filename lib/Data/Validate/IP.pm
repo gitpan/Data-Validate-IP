@@ -1,4 +1,7 @@
 package Data::Validate::IP;
+{
+  $Data::Validate::IP::VERSION = '0.18';
+}
 BEGIN {
   $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
 }
@@ -78,10 +81,6 @@ our @EXPORT = qw(
     is_linklocal_ipv6
     is_special_ipv6
 );
-
-our $VERSION = '0.14';
-
-#Global, we store this only once
 
 # ABSTRACT: ipv4 and ipv6 validation methods
 
@@ -500,7 +499,7 @@ Data::Validate::IP - ipv4 and ipv6 validation methods
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

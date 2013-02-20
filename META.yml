@@ -25,5 +25,5 @@ requires:
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Data-Validate-IP
   repository: git://git.urth.org/Data-Validate-IP.git
-version: 0.17
+version: 0.18
 x_authority: cpan:NEELY
