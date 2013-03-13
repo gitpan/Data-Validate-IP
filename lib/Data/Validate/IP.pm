@@ -1,6 +1,6 @@
 package Data::Validate::IP;
 {
-  $Data::Validate::IP::VERSION = '0.18';
+  $Data::Validate::IP::VERSION = '0.19';
 }
 BEGIN {
   $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
@@ -250,13 +250,16 @@ sub is_innet_ipv4 {
         elsif ($network =~ m{^($partial_ip_re)/(\d\d?)$}) {
             my ($net, $bits) = ($1, $2);
 
-            my $octets = scalar split /\./, $net;
+            # This is a hack to avoid a deprecation warning (Use of implicit
+            # split to @_ is deprecated) that shows up on 5.10.1 but not on
+            # newer Perls.
+            my $octets = scalar(my @tmp = split /\./, $net);
             $network = $net;
             $network .= '.0' x (4 - $octets);
             $network .= "/$bits";
         }
         elsif ($network =~ /^$partial_ip_re$/) {
-            my $octets = scalar split /\./, $network;
+            my $octets = scalar(my @tmp = split /\./, $network);
             if ($octets < 4) {
                 $network .= '.0' x (4 - $octets);
                 $network .= '/' . $octets * 8;
@@ -499,7 +502,7 @@ Data::Validate::IP - ipv4 and ipv6 validation methods
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 
@@ -1236,11 +1239,20 @@ B<[RFC 2460] [RFC 4193] [RFC 4291] [RFC 6434]>
 
 IPv6 Support is new, please test it thoroughly and report any bugs.
 
+=head1 BUGS
+
+Please report any bugs or feature requests to
+C<bug-data-validate-ip@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>. I will be notified, and then you'll automatically be
+notified of progress on your bug as I make changes.
+
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Richard Sonnen <F<sonnen@richardsonnen.com>> for writing the Data::Validate module.
+Thanks to Richard Sonnen <F<sonnen@richardsonnen.com>> for writing the
+Data::Validate module.
 
-Thanks to Matt Dainty <F<matt@bodgit-n-scarper.com>> for adding the is_multicast_ipv4 and is_linklocal_ipv4 code.
+Thanks to Matt Dainty <F<matt@bodgit-n-scarper.com>> for adding the
+is_multicast_ipv4 and is_linklocal_ipv4 code.
 
 =head1 AUTHORS
 
