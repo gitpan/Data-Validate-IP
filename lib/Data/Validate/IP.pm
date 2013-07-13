@@ -1,6 +1,6 @@
 package Data::Validate::IP;
 {
-  $Data::Validate::IP::VERSION = '0.19';
+  $Data::Validate::IP::VERSION = '0.20';
 }
 BEGIN {
   $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
@@ -43,23 +43,6 @@ BEGIN {
 }
 
 our @ISA = qw(Exporter);
-
-# Items to export into callers namespace by default. Note: do not export
-# names by default without a very good reason. Use EXPORT_OK instead.
-# Do not simply export all your public functions/methods/constants.
-
-# This allows declaration	use Data::Validate::IP ':all';
-# If you do not need this, moving things directly into @EXPORT or @EXPORT_OK
-# will save memory.
-our %EXPORT_TAGS = (
-    'all' => [
-        qw(
-
-            )
-    ]
-);
-
-our @EXPORT_OK = (@{ $EXPORT_TAGS{'all'} });
 
 our @EXPORT = qw(
     is_ipv4
@@ -409,6 +392,7 @@ sub is_innet_ipv4 {
 }
 
 
+
 {
     my %ipv6_networks = (
         loopback  => '::1/128',
@@ -502,7 +486,7 @@ Data::Validate::IP - ipv4 and ipv6 validation methods
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -1217,6 +1201,48 @@ actually exists.
 
 The whole block of special IPv6 addresses can be written simple as 2001::/23.
 
+=item B<is_public_ipv6> - is it a valid public ipv6 address
+
+  is_public_ipv6($value);
+  or
+  $obj->is_public_ipv6($value);
+
+=over 4
+
+=item I<Description>
+
+Returns the untainted ip address if the test value appears to be a well-formed
+public ip address.
+
+=item I<Arguments>
+
+=over 4
+
+=item $value
+
+The potential ip to test.
+
+=back
+
+=item I<Returns>
+
+Returns the untainted ip on success, undef on failure.
+
+=item I<Notes, Exceptions, & Bugs>
+
+The function does not make any attempt to check whether an ip
+actually exists.
+
+=item I<From RFC 4193>
+
+   The default behavior of exterior routing protocol sessions between
+   administrative routing regions must be to ignore receipt of and not
+   advertise prefixes in the FC00::/7 block.  A network operator may
+   specifically configure prefixes longer than FC00::/7 for inter-site
+   communication.
+
+=back
+
 =back
 
 =head1 SEE ALSO
@@ -1228,12 +1254,6 @@ B<[RFC 5735] [RFC 1918]>
 IPv6
 
 B<[RFC 2460] [RFC 4193] [RFC 4291] [RFC 6434]>
-
-=over 4
-
-=item L<Data::Validate(3)>
-
-=back
 
 =head1 IPv6
 
