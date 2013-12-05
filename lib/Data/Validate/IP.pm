@@ -1,6 +1,6 @@
 package Data::Validate::IP;
 {
-  $Data::Validate::IP::VERSION = '0.21';
+  $Data::Validate::IP::VERSION = '0.22';
 }
 BEGIN {
   $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
@@ -502,7 +502,7 @@ Data::Validate::IP - IPv4 and IPv6 validation methods
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -532,7 +532,7 @@ version 0.21
 =head1 DESCRIPTION
 
 This module provides a number IP address validation subs that both validate
-and untaint their input. This includes both basic validate (C<is_ipv4()> and
+and untaint their input. This includes both basic validation (C<is_ipv4()> and
 C<is_ipv6()>) and special cases like checking whether an address belongs to a
 specific network or whether an address is public or private (reserved).
 
@@ -548,7 +548,7 @@ form evaluates to false in Perl.
 Note that none of these functions actually attempt to test whether the given
 IP address is routable from your device; they are purely semantic checks.
 
-=head2 is_ipv4($ip)> and is_ipv6($ip)
+=head2 is_ipv4($ip) and is_ipv6($ip)
 
 These functions simply check whether the address is a valid IPv4 or IPv6 address.
 
@@ -684,8 +684,8 @@ networks are a subset of all the special case networks.
 
 =head1 OBJECT-ORIENTED INTERFACE
 
-This module can also be used as a class. You can call
-C<<Data::Validate::IP->new()>> to get an object and then call any of the
+This module can also be used as a class. You can call C<<
+Data::Validate::IP->new() >> to get an object and then call any of the
 validation subroutines as methods on that object. This is somewhat pointless
 since the object will never contain any state but this interface is kept for
 backwards compatibility.
