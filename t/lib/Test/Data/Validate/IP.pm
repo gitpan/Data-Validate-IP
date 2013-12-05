@@ -1,4 +1,4 @@
-package    # hide form PAUSE
+package    # hide from PAUSE
     Test::Data::Validate::IP;
 
 use strict;
@@ -16,8 +16,9 @@ my %ipv4_types = (
     private    => [qw(10.0.0.1 172.16.0.1 192.168.0.1)],
     public     => [qw(1.2.3.4 123.123.44.55 216.17.184.1)],
     loopback   => [qw(127.0.0.1)],
-    testnet    => [qw(192.0.2.9)],
+    testnet    => [qw(192.0.2.9 198.51.100.33 203.0.113.44)],
     multicast  => [qw(224.0.0.1)],
+    anycast    => [qw(192.88.99.45)],
     linklocal  => [qw(169.254.0.1)],
     unroutable => [
         qw(
@@ -25,7 +26,6 @@ my %ipv4_types = (
             100.64.1.2
             192.0.0.4
             198.18.0.55
-            203.0.113.44
             240.0.0.4
             255.255.255.254
             255.255.255.255
@@ -52,7 +52,22 @@ my %ipv6_types = (
             abcd::
             )
     ],
-    loopback  => [qw(::1)],
+    loopback    => [qw(::1)],
+    ipv4_mapped => [
+        qw(
+            ::ffff:0:0
+            ::ffff:0:1234
+            ::ffff:1.2.3.4
+            ::ffff:ffff:ffff
+            )
+    ],
+    discard => [
+        qw(
+            100::
+            100::1234
+            100:0000:0000:0000:ffff:ffff:ffff:ffff
+            )
+    ],
     multicast => [
         qw(
             ff00::
@@ -69,10 +84,31 @@ my %ipv6_types = (
             )
     ],
     special => [
+        [ '2001::'     => [qw( teredo )] ],
+        [ '2001::1234' => [qw( teredo )] ],
+        qw(
+            2001:1ff:ffff:ffff:ffff:ffff:ffff:ffff
+            )
+    ],
+    teredo => [
         qw(
             2001::
             2001::1234
-            2001:1ff:ffff:ffff:ffff:ffff:ffff:ffff
+            2001:0:ffff:ffff:ffff:ffff:ffff:ffff
+            )
+    ],
+    orchid => [
+        qw(
+            2001:10::
+            2001:10::1234
+            2001:001F:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
+            )
+    ],
+    documentation => [
+        qw(
+            2001:db8::
+            2001:db8::1234
+            2001:0db8:ffff:ffff:ffff:ffff:ffff:ffff
             )
     ],
 );
@@ -233,7 +269,9 @@ sub _type_tests {
     my @types = sort keys %{$types};
 
     for my $type (@types) {
-        for my $ip (@{ $types->{$type} }) {
+        for my $test (@{ $types->{$type} }) {
+            my ($ip, $is_also) = ref $test ? @{$test} : ($test, []);
+
             my ($is_sub_name, $is_sub) = _sub_for_type($type, $ip_number);
 
             is($is_sub->($ip), $ip, "$is_sub_name($ip) returns $ip");
@@ -242,18 +280,33 @@ sub _type_tests {
                 "->$is_sub_name($ip) returns $ip"
             );
 
-            for my $other (grep { $_ ne $type } @types) {
-                my ($isnt_sub_name, $isnt_sub)
+            for my $other (sort grep { $_ ne $type } @types) {
+                next if grep { $_ eq $other } @{$is_also};
+
+                my ($other_sub_name, $other_sub)
                     = _sub_for_type($other, $ip_number);
 
-                is(
-                    $isnt_sub->($ip), undef,
-                    "$isnt_sub_name($ip) returns undef"
-                );
-                is(
-                    $object->$isnt_sub_name($ip), undef,
-                    "->$isnt_sub_name($ip) returns undef"
-                );
+                if (Data::Validate::IP::_network_is_subnet_of($type, $other))
+                {
+                    is(
+                        $other_sub->($ip), $ip,
+                        "$other_sub_name($ip) returns $ip"
+                    );
+                    is(
+                        $object->$other_sub_name($ip), $ip,
+                        "->$other_sub_name($ip) returns $ip"
+                    );
+                }
+                else {
+                    is(
+                        $other_sub->($ip), undef,
+                        "$other_sub_name($ip) returns undef"
+                    );
+                    is(
+                        $object->$other_sub_name($ip), undef,
+                        "->$other_sub_name($ip) returns undef"
+                    );
+                }
             }
         }
     }
@@ -268,7 +321,7 @@ sub _sub_for_type {
         no strict 'refs';
         \&{$sub_name};
         }
-        or die "No sub named $sub_name was not imported";
+        or die "No sub named $sub_name was imported";
 
     return ($sub_name, $sub);
 }

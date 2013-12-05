@@ -1,11 +1,11 @@
 {
-   "abstract" : "ipv4 and ipv6 validation methods",
+   "abstract" : "IPv4 and IPv6 validation methods",
    "author" : [
       "Neil Neely <neil@neely.cx>",
       "Dave Rolsky <autarch@urth.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560",
+   "generated_by" : "Dist::Zilla version 4.300039, CPAN::Meta::Converter version 2.131560",
    "license" : [
       "perl_5"
    ],
@@ -56,7 +56,7 @@
          "web" : "https://github.com/neilneely/Data-Validate-IP.git"
       }
    },
-   "version" : "0.20",
+   "version" : "0.21",
    "x_authority" : "cpan:NEELY"
 }
 
