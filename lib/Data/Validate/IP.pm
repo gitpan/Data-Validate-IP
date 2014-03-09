@@ -1,7 +1,5 @@
 package Data::Validate::IP;
-{
-  $Data::Validate::IP::VERSION = '0.22';
-}
+$Data::Validate::IP::VERSION = '0.23';
 BEGIN {
   $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
 }
@@ -24,6 +22,7 @@ BEGIN {
         && eval {
         require Socket;
         Socket->import(qw( AF_INET AF_INET6 inet_pton ));
+
         # On some platforms, Socket.pm exports an inet_pton that just dies
         # when it is called. On others, inet_pton accepts various forms of
         # invalid input.
@@ -96,81 +95,29 @@ sub _fast_is_ipv6 {
     return $1;
 }
 
-sub _slow_is_ipv6 {
-    shift if ref $_[0];
-    my $value = shift;
+{
+    # This comes from Regexp::IPv6
+    my $ipv6_re
+        = qr/(?-xism::(?::[0-9a-fA-F]{1,4}){0,5}(?:(?::[0-9a-fA-F]{1,4}){1,2}|:(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})))|[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}|:)|(?::(?:[0-9a-fA-F]{1,4})?|(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))))|:(?:(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4})?|))|(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|:[0-9a-fA-F]{1,4}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){0,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,2}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,3}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,4}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:)))/;
 
-    return unless defined($value);
+    sub _slow_is_ipv6 {
+        shift if ref $_[0];
+        my $value = shift;
 
-    # This is valid but the algorithm below won't do the right thing with it.
-    return '::' if $value eq '::';
+        return unless defined($value);
 
-    # if there is a :: then there must be only one ::
-    # and the length can be variable
-    # without it, the length must be 8 groups
-
-    my (@chunks) = split(':', $value);
-
-    #need to see if last chunk is an ipv4 address, if it is we pop it off and
-    #exempt it from the normal ipv6 checking and stick it back on at the end.
-    #if only one chunk and it matches it isn't ipv6 - it is a ipv4 address only
-    my $ipv4;
-    my $expected_chunks = 8;
-    if (@chunks > 1 && is_ipv4($chunks[-1])) {
-        $ipv4 = pop(@chunks);
-        $expected_chunks--;
+        return '::' if $value eq '::';
+        return unless $value =~ /^$ipv6_re$/;
+        $value =~ /(.+)/;
+        return $1;
     }
-    my $empty = 0;
-
-    #Workaround to handle trailing :: being valid
-
-    if ($value =~ /[0123456789abcdef]{1,4}::$/) {
-        $empty++;
-    }
-    elsif ($value =~ /:$/) {
-
-        #single trailing ':' is invalid
-        return;
-    }
-    foreach (@chunks) {
-        return unless (/^[0123456789abcdef]{0,4}$/i);
-        $empty++ if /^$/;
-    }
-
-    #More than one :: block is bad, but if it starts with :: it will look like two, so we need an exception.
-    if ($empty == 2 && $value =~ /^::/) {
-
-        #This is ok
-    }
-    elsif ($empty > 1) {
-        return;
-    }
-
-    if (defined $ipv4) {
-        push(@chunks, $ipv4);
-    }
-
-    #Need 8 chunks, or we need an empty section that could be filled to represent the missing '0' sections
-    return
-        unless (@chunks == $expected_chunks
-        || @chunks < $expected_chunks && $empty);
-
-    my $return = join(':', @chunks);
-
-    #Explicitly untaint the data
-    $return =~ /(.+)/;
-    $return = $1;
-
-    #Need to handle the exception of trailing :: being valid
-    return $return . '::' if ($value =~ /::$/);
-    return $return;
-
 }
 
 # This is just a quick test - we'll let NetAddr::IP decide if the address is
 # valid.
-my $ip_re = qr/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+my $ip_re         = qr/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 my $partial_ip_re = qr/\d{1,3}(?:\.\d{1,3}){0,2}/;
+
 sub is_innet_ipv4 {
     shift if ref $_[0];
     my $value   = shift;
@@ -278,7 +225,7 @@ sub is_innet_ipv4 {
     );
 
     sub _netmask_to_bits {
-        return $netmasks{$_[0]};
+        return $netmasks{ $_[0] };
     }
 }
 
@@ -329,9 +276,10 @@ sub is_innet_ipv4 {
 
     sub _deprecation_warn {
         my $warning = shift;
-        my @caller = caller(2);
+        my @caller  = caller(2);
 
-        my $caller_info = "at line $caller[2] of $caller[0] in sub $caller[3]";
+        my $caller_info
+            = "at line $caller[2] of $caller[0] in sub $caller[3]";
 
         return if $warned_at{$warning}{$caller_info}++;
 
@@ -437,7 +385,7 @@ sub _build_is_X_ip_subs {
         # We're using code gen rather than just making an anon sub outright so
         # we don't have to pay the cost of derefencing the $is_ip_sub and the
         # dynamic dispatch cost for $netaddr_new
-        my $sub = eval sprintf( <<'EOF', $is_ip_sub, $netaddr_new );
+        my $sub = eval sprintf( <<'EOF', $is_ip_sub, $netaddr_new);
 sub {
     shift if ref $_[0];
     my $value = shift;
@@ -462,7 +410,7 @@ EOF
         push @EXPORT, $sub_name;
     }
 
-    my $sub = eval sprintf( <<'EOF', $is_ip_sub, $netaddr_new );
+    my $sub = eval sprintf( <<'EOF', $is_ip_sub, $netaddr_new);
 sub {
     shift if ref $_[0];
     my $value = shift;
@@ -502,7 +450,7 @@ Data::Validate::IP - IPv4 and IPv6 validation methods
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 
@@ -731,7 +679,7 @@ Dave Rolsky <autarch@urth.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Neil Neely.
+This software is copyright (c) 2014 by Neil Neely.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -1,0 +1,43 @@
+use strict;
+use warnings;
+
+use v5.16;
+
+use Benchmark qw( cmpthese );
+use Data::Validate::IP;
+use Math::Int128 qw( uint128 );
+use Net::Works::Address;
+
+use Regexp::IPv6 qw($IPv6_re);
+
+say $IPv6_re;exit;
+sub _re_check {
+    if ( $_[0] =~ $IPv6_re) {
+        $_[0] =~ /(.+)/;
+        return $1;
+    }
+    else {
+        return;
+    }
+}
+
+my @strings;
+for (1 .. 500) {
+    my $digits = int(rand(38)) + 1;
+    my $addr = Net::Works::Address->new_from_integer(
+        integer => uint128(join q{}, map { int(rand(10)) } 0 .. $digits),
+        version => 6,
+    );
+    push @strings, $addr->as_string();
+}
+
+cmpthese(
+    1000,
+    {
+        'slow_ipv6' =>
+            sub { Data::Validate::IP::_slow_is_ipv6($_) for @strings },
+        'fast_ipv6' =>
+            sub { Data::Validate::IP::_fast_is_ipv6($_) for @strings },
+        're' => sub { _re_check($_) for @strings },
+    },
+);
