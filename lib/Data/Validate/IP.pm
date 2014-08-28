@@ -1,8 +1,6 @@
 package Data::Validate::IP;
-$Data::Validate::IP::VERSION = '0.23';
-BEGIN {
-  $Data::Validate::IP::AUTHORITY = 'cpan:NEELY';
-}
+# git description: v0.23-7-g6ffbf1f
+$Data::Validate::IP::VERSION = '0.24';
 
 use strict;
 use warnings;
@@ -60,7 +58,9 @@ sub _fast_is_ipv4 {
     my $value = shift;
 
     return
-        unless defined $value && defined inet_pton(Socket::AF_INET(), $value);
+           unless defined $value
+        && $value !~ /\0/
+        && defined inet_pton(Socket::AF_INET(), $value);
 
     $value =~ /(.+)/;
     return $1;
@@ -88,7 +88,8 @@ sub _fast_is_ipv6 {
     my $value = shift;
 
     return
-        unless defined $value
+           unless defined $value
+        && $value !~ /\0/
         && defined inet_pton(Socket::AF_INET6(), $value);
 
     $value =~ /(.+)/;
@@ -444,18 +445,21 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Data::Validate::IP - IPv4 and IPv6 validation methods
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
   use Data::Validate::IP qw(is_ipv4 is_ipv6);
 
+  my $suspect = '1.2.3.4';
   if (is_ipv4($suspect)) {
       print "Looks like an IPv4 address";
   }
@@ -463,19 +467,13 @@ version 0.23
       print "Not an IPv4 address\n";
   }
 
+  $suspect = '::1234';
   if (is_ipv6($suspect)) {
       print "Looks like an IPv6 address";
   }
   else {
       print "Not an IPv6 address\n";
   }
-
-  # or as an object
-  my $v = Data::Validate::IP->new();
-
-  die "not an IPv4 ip" unless ($v->is_ipv4('domain.com'));
-
-  die "not an IPv6 ip" unless ($v->is_ipv6('domain.com'));
 
 =head1 DESCRIPTION
 
@@ -629,6 +627,8 @@ These subroutines check whether the given IP address belongs to any of the
 special case networks defined previously. Note that this is B<not> simply the
 opposite of checking C<is_private_ipv4()> or C<is_private_ipv6()>. The private
 networks are a subset of all the special case networks.
+
+=for Pod::Coverage new
 
 =head1 OBJECT-ORIENTED INTERFACE
 
